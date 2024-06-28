@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Статистика смен</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Latest compiled and minified CSS -->
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-3">Выберите месяц и загрузите файлы</h1>
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="schedule_file">файл расписания (Например Чебоксары_2024.01.25_уточнение 1.xlsm) (не обязательно)</label>
+                <input type="file" class="form-control-file" name="schedule_file" id="schedule_file">
+            </div>
+            <div class="form-group">
+                <label for="forecast_file">Загрузите файл прогноза (Например UWKS-2024-04.csv)</label>
+                <input type="file" class="form-control-file" name="forecast_file" id="forecast_file" required>
+            </div>
+            <h3>Месяц</h3>
+            <div class="btn-group mb-3" role="group" aria-label="Выбор месяца">
+                {% for i in range(1, 13) %}
+                <button type="submit" class="btn btn-secondary" name="month" value="{{ i }}">
+                    {{ i }}
+                </button>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+</body>
+</html>
