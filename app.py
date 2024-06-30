@@ -15,8 +15,9 @@ def allowed_file(filename):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        print(request.form['month'])
+        # print(request.form['month'])
         month = int(request.form['month'])
+        city=request.files['forecast_file'].filename.split('-')[0]
         forecast_file = request.files['forecast_file']
 
         forecast_filename = 'forecast.csv'
@@ -46,8 +47,14 @@ def index():
                       7: 'июль', 8: 'август', 9: 'сентябрь', 10: 'октябрь', 11: 'ноябрь', 12: 'декабрь'}
 
         def extract_month(month):
+            schedules['Unnamed: 1'] = schedules['Unnamed: 1'].fillna('').str.lower()
+            synoptic_indices = schedules[schedules['Unnamed: 1'].str.contains('синоптик')].index
+            if len(synoptic_indices) == 0:
+                return pd.DataFrame()
             idx = np.where(schedules.iloc[:, 3].apply(lambda x: month_dict[month] in str(x).lower()))[0][0]
-            t_schedule = schedules.iloc[idx + 9:idx + 15, :34]
+            start_idx = synoptic_indices[synoptic_indices > idx].min()
+            end_idx = synoptic_indices[synoptic_indices < idx + 30].max() + 1
+            t_schedule = schedules.iloc[start_idx:end_idx, :34]
             t_schedule.iloc[:, 2:] = t_schedule.iloc[:, 2:].map(
                 lambda x: 8 if x == 8 else (15 if x == 15 else (8 if x == 12 else 0)))
             return t_schedule
@@ -84,10 +91,15 @@ def index():
             time = i[0].strip().split('/')[0][2:4]
             day = int(day)
             time = int(time)
+            # print(day)
             if time <= 6:
+                if len(schedule[(schedule.iloc[:, 2 + day] == 8) & (schedule.iloc[:, 2 + day - 1] == 15)]) == 0:
+                    continue
                 name = schedule[(schedule.iloc[:, 2 + day] == 8) & (schedule.iloc[:, 2 + day - 1] == 15)].iloc[0, 0]
                 statistics[name].append(float(i[1]))
             else:
+                if len(schedule[schedule.iloc[:, 2 + day] == 15]) == 0:
+                    continue
                 name = schedule[schedule.iloc[:, 2 + day] == 15].iloc[0, 0]
                 statistics[name].append(float(i[1]))
 
@@ -98,7 +110,7 @@ def index():
                 result[employee] = round(average, 2)
             else:
                 result[employee] = 'Нет статистики'
-        return render_template('results.html', result=result, month=month_dict[month], year=schedules.iloc[8, 13])
+        return render_template('results.html', result=result, month=month_dict[month], year=schedules.iloc[8, 13], city=city)
     return render_template('index.html')
 
 

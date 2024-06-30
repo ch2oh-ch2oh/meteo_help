@@ -4,17 +4,12 @@
     <meta charset="UTF-8">
     <title>Результаты</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Latest compiled and minified CSS -->
-
-    <!-- Optional theme -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap-theme.min.css">
-
-    <!-- Latest compiled and minified JavaScript -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="container mt-5">
-    <h1>Результаты статистики, месяц {{ month }}, год {{ year }}</h1>
+    <h1>Результаты статистики, месяц {{ month }}, год {{ year }}, {{ city }}</h1>
     <a href="/" class="btn btn-primary mb-3">Вернуться на главную</a>
     <div class="list-group">
         {% for key, value in result.items() %}
